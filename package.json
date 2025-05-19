@@ -1,0 +1,19 @@
+{
+  "name": "snuggy",
+  "version": "1.0.0",
+  "description": "A snuggy little HTML canvas game engine.",
+  "type": "module",
+  "files": [
+    "dist"
+  ],
+  "exports": "./dist/index.js",
+  "scripts": {
+    "start": "tsc --watch",
+    "build": "tsc"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.18",
+    "prettier": "^3.5.3",
+    "typescript": "~5.8.3"
+  }
+}
