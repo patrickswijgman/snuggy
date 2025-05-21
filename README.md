@@ -37,14 +37,27 @@ There is no extensive documentation, the example below should be enough to get y
 import { run, loadTexture, loadFont, loadSound, drawSprite, delta, resetTransform, translateTransform, scaleTransform, drawSprite, setCameraSmoothing, addCameraTransform } from "snuggy";
 
 // const enums are compiled to inline values instead of objects, making it more speedy.
-const enum Type {
-  PLAYER,
-  ENEMY,
+const enum Texture {
+  ATLAS = "atlas",
+}
+
+const enum Font {
+  DEFAULT = "default",
+}
+
+const enum Sound {
+  MUSIC = "music"
+  OOF = "oof",
 }
 
 const enum Input {
   LEFT = "ArrowLeft",
   RIGHT = "ArrowRight",
+}
+
+const enum Type {
+  PLAYER,
+  ENEMY,
 }
 
 // Arbitrary amount, can be less or more depending on your needs.
@@ -74,18 +87,18 @@ run(
       // Textures.
       // A texture would contain all the sprites you need for your game.
       // Using a single texture for all sprites is more efficient for the GPU!
-      loadTexture("atlas", "textures/atlas.png"),
+      loadTexture(Texture.ATLAS, "textures/atlas.png"),
 
       // Fonts.
-      loadFont("default", "ComicSans", 8, "fonts/ComicSans.ttf"),
+      loadFont(Font.DEFAULT, "fonts/ComicSans.ttf", "ComicSans", 8),
 
       // Sounds.
-      loadSound("music", "sounds/music.mp3", true),
-      loadSound("oof", "sounds/off.wav"),
+      loadSound(Sound.MUSIC, "sounds/music.mp3", true),
+      loadSound(Sound.OOF, "sounds/off.wav"),
     ]);
 
     setCameraSmoothing(0.1);
-    setFont("default");
+    setFont(Font.DEFAULT);
 
     // Setup the player.
     type[playerIndex] = Type.PLAYER;
@@ -140,7 +153,7 @@ run(
           {
             // A sprite is a sub-region (frame) within a texture.
             drawSprite(
-              "atlas", // textureId
+              Texture.ATLAS, // textureId
               0, // frameX
               0, // frameY
               16, // frameWidth
