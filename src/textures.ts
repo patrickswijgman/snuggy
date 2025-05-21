@@ -4,7 +4,7 @@ export async function loadTexture(id: string, url: string) {
   textures[id] = await loadImage(url);
 }
 
-export async function loadRenderTexture(id: string, w: number, h: number, draw: (ctx: CanvasRenderingContext2D) => void) {
+export function loadRenderTexture(id: string, w: number, h: number, draw: (ctx: CanvasRenderingContext2D) => void) {
   const canvas = document.createElement("canvas");
   const ctx = canvas.getContext("2d")!;
   canvas.width = w;

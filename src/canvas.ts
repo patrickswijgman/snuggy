@@ -44,6 +44,10 @@ export function setFont(id: string) {
   setFont(id);
 }
 
+export function drawTexture(textureId: string, x: number, y: number) {
+  ctx.drawImage(getTexture(textureId), x, y);
+}
+
 export function drawSprite(textureId: string, x: number, y: number, w: number, h: number, pivotX: number, pivotY: number) {
   ctx.drawImage(getTexture(textureId), x, y, w, h, -pivotX, -pivotY, w, h);
 }
