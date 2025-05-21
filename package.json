@@ -1,6 +1,6 @@
 {
   "name": "snuggy",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "A snuggy little HTML canvas game engine.",
   "type": "module",
   "files": [
