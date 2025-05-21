@@ -41,7 +41,7 @@ export function clearBackground() {
 }
 
 export function setFont(id: string) {
-  setFont(id);
+  fontId = id
 }
 
 export function drawTexture(textureId: string, x: number, y: number) {
