@@ -6,8 +6,8 @@ export async function run(size: number, setup: () => Promise<void>, update: () =
   setupCanvas(size);
   await setup();
   startLoop(() => {
-    resetTransform();
     clearBackground();
+    resetTransform();
     updateInputs();
     update();
     resetInputs();
