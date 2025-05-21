@@ -37,11 +37,12 @@ export function rotateTransform(degrees: number) {
 }
 
 export function clearBackground() {
-  ctx.clearRect(0, 0, width, height);
+  ctx.resetTransform();
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
 }
 
 export function setFont(id: string) {
-  fontId = id
+  fontId = id;
 }
 
 export function drawTexture(textureId: string, x: number, y: number) {

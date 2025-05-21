@@ -11,7 +11,7 @@ export let pointerWorldX = 0;
 export let pointerWorldY = 0;
 
 export function updateInputs() {
-  updatePointerWorldPosition()
+  updatePointerWorldPosition();
 }
 
 export function resetInputs() {

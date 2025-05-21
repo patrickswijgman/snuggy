@@ -1,4 +1,4 @@
-export function tween(x: number) {
+export function ease(x: number) {
   return -(Math.cos(Math.PI * x) - 1) / 2;
 }
 
