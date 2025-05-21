@@ -34,7 +34,7 @@ npm i snuggy
 There is no extensive documentation, the example below should be enough to get you started! Also the source code is not a lot :wink:
 
 ```typescript
-import { run, loadTexture, loadFont, loadSound, drawSprite, delta, resetTransform, translateTransform, scaleTransform, drawSprite, setCameraSmoothing, addCameraTransform } from "snuggy";
+import { addCameraTransform, delta, drawSprite, isInputDown, loadFont, loadSound, loadTexture, resetTransform, run, scaleTransform, setCameraSmoothing, setFont, translateTransform } from "snuggy";
 
 // const enums are compiled to inline values instead of objects, making it more speedy.
 const enum Texture {
@@ -46,7 +46,7 @@ const enum Font {
 }
 
 const enum Sound {
-  MUSIC = "music"
+  MUSIC = "music",
   OOF = "oof",
 }
 
@@ -76,96 +76,96 @@ const isFlipped = new Uint8Array(MAX_ENTITIES);
 // In the real world you'd want to make a function to get the next free entity.
 const playerIndex = 0;
 
-run(
-  // Canvas size, will be auto sized and scaled based on screen and aspect ratio.
-  320,
+async function setup() {
+  // Use Promise.all to load all resources in parallel, increasing page load speed!
+  await Promise.all([
+    // Textures.
+    // A texture would contain all the sprites you need for your game.
+    // Using a single texture for all sprites is more efficient for the GPU!
+    loadTexture(Texture.ATLAS, "textures/atlas.png"),
 
-  // Setup.
-  async () => {
-    // Use Promise.all to load all resources in parallel, increasing page load speed!
-    await Promise.all([
-      // Textures.
-      // A texture would contain all the sprites you need for your game.
-      // Using a single texture for all sprites is more efficient for the GPU!
-      loadTexture(Texture.ATLAS, "textures/atlas.png"),
+    // Fonts.
+    loadFont(Font.DEFAULT, "fonts/ComicSans.ttf", "ComicSans", 8),
 
-      // Fonts.
-      loadFont(Font.DEFAULT, "fonts/ComicSans.ttf", "ComicSans", 8),
+    // Sounds.
+    loadSound(Sound.MUSIC, "sounds/music.mp3", true),
+    loadSound(Sound.OOF, "sounds/off.wav"),
+  ]);
 
-      // Sounds.
-      loadSound(Sound.MUSIC, "sounds/music.mp3", true),
-      loadSound(Sound.OOF, "sounds/off.wav"),
-    ]);
+  setCameraSmoothing(0.1);
+  setFont(Font.DEFAULT);
 
-    setCameraSmoothing(0.1);
-    setFont(Font.DEFAULT);
+  // Setup the player.
+  type[playerIndex] = Type.PLAYER;
+  positionX[playerIndex] = 50;
+  positionY[playerIndex] = 50;
+  isActive[playerIndex] = 1; // A positive number equals true, zero equals false.
+}
 
-    // Setup the player.
-    type[playerIndex] = Type.PLAYER;
-    positionX[playerIndex] = 50;
-    positionY[playerIndex] = 50;
-    isActive[playerIndex] = 1; // A positive number equals true, zero equals false.
-  },
-
-  // Update and draw each frame.
-  () => {
-    for (let i = 0; i < MAX_ENTITIES; i++) {
-      if (!isActive[i]) {
-        continue;
-      }
-
-      // Update entity logic.
-      switch (type) {
-        case EntityType.PLAYER:
-          {
-            velocityX[i] = 0;
-
-            if (isInputDown(Input.LEFT)) {
-              velocityX[i] -= 1;
-              isFlipped[i] = 1;
-            }
-            if (isInputDown(Input.RIGHT)) {
-              velocityX[i] += 1;
-              isFlipped[i] = 0;
-            }
-          }
-          break;
-      }
-
-      positionX[i] += velocityX[i] * delta;
-      positionY[i] += velocityY[i] * delta;
-
-      // Transformation matrix operations:
-      // 1. Put the drawing pencil back at 0,0 and reset scaling and reset rotation.
-      resetTransform();
-      // 2. Add camera translation (don't do this if you want to draw UI elements).
-      addCameraTransform();
-      // 3. Put the drawing pencil at the entity's position to draw the sprite at.
-      translateTransform(positionX[i], positionY[i]);
-      // 4. Scale by -1 on the x-axis to horizontally flip a sprite.
-      if (isFlipped[i]) {
-        scaleTransform(-1, 1);
-      }
-
-      // Draw entity sprite.
-      switch (type) {
-        case EntityType.PLAYER:
-          {
-            // A sprite is a sub-region (frame) within a texture.
-            drawSprite(
-              Texture.ATLAS, // textureId
-              0, // frameX
-              0, // frameY
-              16, // frameWidth
-              16, // frameHeight
-              8, // pivotX (point of rotation and scaling)
-              16, // pivotY (point of rotation and scaling)
-            );
-          }
-          break;
-      }
+// Update and draw each frame.
+function update() {
+  for (let i = 0; i < MAX_ENTITIES; i++) {
+    if (!isActive[i]) {
+      continue;
     }
-  },
+
+    // Update entity logic.
+    switch (type[i]) {
+      case Type.PLAYER:
+        {
+          velocityX[i] = 0;
+
+          if (isInputDown(Input.LEFT)) {
+            velocityX[i] -= 1;
+            isFlipped[i] = 1;
+          }
+          if (isInputDown(Input.RIGHT)) {
+            velocityX[i] += 1;
+            isFlipped[i] = 0;
+          }
+        }
+        break;
+    }
+
+    positionX[i] += velocityX[i] * delta;
+    positionY[i] += velocityY[i] * delta;
+
+    // Transformation matrix operations:
+    // 1. Put the drawing pencil back at 0,0 and reset scaling and reset rotation.
+    resetTransform();
+    // 2. Add camera translation (don't do this if you want to draw UI elements).
+    addCameraTransform();
+    // 3. Put the drawing pencil at the entity's position to draw the sprite at.
+    translateTransform(positionX[i], positionY[i]);
+    // 4. Scale by -1 on the x-axis to horizontally flip a sprite.
+    if (isFlipped[i]) {
+      scaleTransform(-1, 1);
+    }
+
+    // Draw entity sprite.
+    switch (type[i]) {
+      case Type.PLAYER:
+        {
+          // A sprite is a sub-region (frame) within a texture.
+          drawSprite(
+            Texture.ATLAS, // textureId
+            0, // frameX
+            0, // frameY
+            16, // frameWidth
+            16, // frameHeight
+            8, // pivotX (point of rotation and scaling)
+            16, // pivotY (point of rotation and scaling)
+          );
+        }
+        break;
+    }
+  }
+}
+
+run(
+  320, // Canvas size, will be auto sized and scaled based on screen and aspect ratio.
+  setup,
+  update,
 );
 ```
 
