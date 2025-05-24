@@ -31,7 +31,7 @@ npm i snuggy
 
 ## Usage
 
-There is no extensive documentation, the example below should be enough to get you started! Also the source code is not a lot :wink:
+There is no extensive documentation, the example below should be enough to get you started! Also the source code of snuggy is not a lot :wink:
 
 ```typescript
 import { addCameraTransform, delta, drawSprite, isInputDown, loadFont, loadSound, loadTexture, resetTransform, run, scaleTransform, setCameraSmoothing, setFont, translateTransform } from "snuggy";
@@ -56,8 +56,8 @@ const enum Input {
 }
 
 const enum Type {
-  PLAYER,
-  ENEMY,
+  PLAYER = 1,
+  ENEMY = 2,
 }
 
 // Arbitrary amount, can be less or more depending on your needs.
@@ -73,7 +73,7 @@ const isActive = new Uint8Array(MAX_ENTITIES);
 const isFlipped = new Uint8Array(MAX_ENTITIES);
 
 // Let's reserve the first index for the player.
-// In the real world you'd want to make a function to get the next free entity.
+// In the real world you'd want to make a function to get the next free entity index.
 const playerIndex = 0;
 
 async function setup() {
@@ -127,8 +127,14 @@ function update() {
         break;
     }
 
+    // Use delta when doing frame-dependent math operations.
+    // Otherwise objects would move slower at 30 fps for example.
     positionX[i] += velocityX[i] * delta;
     positionY[i] += velocityY[i] * delta;
+
+    // NOTE:
+    // `delta` is a scalar value, at 30 fps it will have a value of 2 if max fps is 60.
+    // Use `time` instead to increase timers as this is the time in milliseconds instead.
 
     // Transformation matrix operations:
     // 1. Put the drawing pencil back at 0,0 and reset scaling and reset rotation.
@@ -142,7 +148,7 @@ function update() {
       scaleTransform(-1, 1);
     }
 
-    // Draw entity sprite.
+    // Render entity.
     switch (type[i]) {
       case Type.PLAYER:
         {
