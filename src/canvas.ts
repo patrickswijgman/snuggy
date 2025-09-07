@@ -1,6 +1,10 @@
-import { getFont } from "./fonts.js";
-import { getTexture } from "./textures.js";
-import { toRadians } from "./utils.js";
+import { getFont } from "./fonts.ts";
+import { getTexture } from "./textures.ts";
+import { toRadians } from "./utils.ts";
+
+const WIDTH = window.screen.width;
+const HEIGHT = window.screen.height;
+const ASPECT_RATIO = WIDTH / HEIGHT;
 
 export const canvas = document.createElement("canvas");
 export const ctx = canvas.getContext("2d")!;
@@ -13,8 +17,8 @@ export let fontId: string;
 
 export function setupCanvas(size: number) {
   width = size;
-  height = size / (window.screen.width / window.screen.height);
-  scale = window.screen.height / height;
+  height = size / ASPECT_RATIO;
+  scale = HEIGHT / height;
   resize();
   window.addEventListener("resize", resize);
   document.body.appendChild(canvas);
@@ -41,16 +45,12 @@ export function clearBackground() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 }
 
-export function setFont(id: string) {
-  fontId = id;
-}
-
 export function drawTexture(textureId: string, x: number, y: number) {
   ctx.drawImage(getTexture(textureId), x, y);
 }
 
-export function drawSprite(textureId: string, x: number, y: number, w: number, h: number, pivotX: number, pivotY: number) {
-  ctx.drawImage(getTexture(textureId), x, y, w, h, -pivotX, -pivotY, w, h);
+export function drawSprite(textureId: string, x: number, y: number, frameX: number, frameY: number, frameW: number, frameH: number) {
+  ctx.drawImage(getTexture(textureId), frameX, frameY, frameW, frameH, x, y, frameW, frameH);
 }
 
 export function drawText(text: string, x: number, y: number, color: string, align: CanvasTextAlign, baseline: CanvasTextBaseline) {
@@ -73,6 +73,10 @@ export function drawRect(x: number, y: number, w: number, h: number, color: stri
 
 export function setAlpha(a: number) {
   ctx.globalAlpha = a;
+}
+
+export function setFont(id: string) {
+  fontId = id;
 }
 
 export function getWidth() {

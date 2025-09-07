@@ -10,6 +10,10 @@ export function toDegrees(radians: number) {
   return (radians * 180) / Math.PI;
 }
 
+export function clamp(value: number, min: number, max: number) {
+  return Math.max(min, Math.min(max, value));
+}
+
 export function getRandomNumber(min: number, max: number) {
   return Math.floor(Math.random() * (max - min)) + min;
 }

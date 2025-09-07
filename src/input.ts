@@ -1,5 +1,5 @@
-import { cameraX, cameraY } from "./camera.js";
-import { canvas, scale } from "./canvas.js";
+import { cameraX, cameraY } from "./camera.ts";
+import { canvas, scale } from "./canvas.ts";
 
 const inputsDown: Record<string, boolean> = Object.create(null);
 const inputsPressed: Record<string, boolean> = Object.create(null);
@@ -20,7 +20,7 @@ export function resetInputs() {
   }
 
   for (const id in inputsReleased) {
-    inputsPressed[id] = false;
+    inputsReleased[id] = false;
   }
 }
 

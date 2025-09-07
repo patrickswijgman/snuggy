@@ -1,4 +1,5 @@
-const targetFrameTime = 1000 / 60;
+const FRAME_TIME_TARGET = 1000 / 60;
+const FRAME_TIME_THRESHOLD = 100;
 
 let last = 0;
 let now = 0;
@@ -19,18 +20,22 @@ export function startLoop(update: () => void) {
     now = performance.now();
 
     time = now - last;
-    delta = time / targetFrameTime;
-    elapsed += time;
+    delta = time / FRAME_TIME_TARGET;
 
-    frames++;
-    framesTime += time;
-    if (framesTime >= 1000) {
-      fps = frames;
-      frames = 0;
-      framesTime = 0;
+    if (time < FRAME_TIME_THRESHOLD) {
+      elapsed += time;
+
+      frames++;
+      framesTime += time;
+      if (framesTime >= 1000) {
+        fps = frames;
+        frames = 0;
+        framesTime = 0;
+      }
+
+      update();
     }
 
-    update();
     requestAnimationFrame(tick);
   };
 

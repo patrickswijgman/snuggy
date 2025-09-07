@@ -8,17 +8,24 @@
   ],
   "main": "./dist/index.js",
   "exports": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "scripts": {
-    "start": "tsc --watch",
-    "build": "tsc"
+    "start": "vite",
+    "build": "vite build"
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/patrickswijgman/snuggy"
   },
   "devDependencies": {
+    "@biomejs/biome": "^2.0.6",
+    "@microsoft/api-extractor": "^7.52.10",
     "@types/node": "^22.15.18",
-    "prettier": "^3.5.3",
-    "typescript": "~5.8.3"
+    "typescript": "~5.8.3",
+    "unplugin-dts": "^1.0.0-beta.0",
+    "vite": "npm:rolldown-vite@^7.0.0"
+  },
+  "overrides": {
+    "vite": "npm:rolldown-vite@^7.0.0"
   }
 }

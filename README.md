@@ -9,7 +9,7 @@ A snuggy simple game engine to make games with HTML canvas. Perfect for little d
 - Auto sizing canvas (based on screen and aspect ratio)
 - Drawing (textures, sprites, text and shapes)
 - Render textures (draw your own textures in code!)
-- Camera (with smooooothing)
+- Camera (with smoothing and boundary)
 - A few handy util functions
 
 ## Installation
@@ -34,7 +34,7 @@ npm i snuggy
 There is no extensive documentation, the example below should be enough to get you started! Also the source code of snuggy is not a lot :wink:
 
 ```typescript
-import { addCameraTransform, delta, drawSprite, isInputDown, loadFont, loadSound, loadTexture, resetTransform, run, scaleTransform, setCameraSmoothing, setFont, translateTransform } from "snuggy";
+import { addCameraTransform, delta, drawSprite, isInputDown, loadFont, loadSound, loadTexture, resetTransform, run, scaleTransform, setCameraBoundary, setCameraSmoothing, setFont, translateTransform } from "snuggy";
 
 // const enums are compiled to inline values instead of objects, making it more speedy.
 const enum Texture {
@@ -51,8 +51,13 @@ const enum Sound {
 }
 
 const enum Input {
+  // See for example https://www.toptal.com/developers/keycode for key codes.
   LEFT = "ArrowLeft",
   RIGHT = "ArrowRight",
+  // Use the button number as string for mouse buttons.
+  LMB = "0",
+  MMB = "1",
+  RMB = "2",
 }
 
 const enum Type {
@@ -64,6 +69,7 @@ const enum Type {
 const MAX_ENTITIES = 2048;
 
 // Entity data (Structure of Arrays)
+// See my other library https://github.com/patrickswijgman/game-data-gen to create these data structures easily.
 const type = new Uint8Array(MAX_ENTITIES);
 const positionX = new Float32Array(MAX_ENTITIES);
 const positionY = new Float32Array(MAX_ENTITIES);
@@ -89,10 +95,11 @@ async function setup() {
 
     // Sounds.
     loadSound(Sound.MUSIC, "sounds/music.mp3", true),
-    loadSound(Sound.OOF, "sounds/off.wav"),
+    loadSound(Sound.OOF, "sounds/oof.wav"),
   ]);
 
   setCameraSmoothing(0.1);
+  setCameraBoundary(0, 0, 1000, 1000); // Restrict camera to the level size.
   setFont(Font.DEFAULT);
 
   // Setup the player.
@@ -127,14 +134,14 @@ function update() {
         break;
     }
 
-    // Use delta when doing frame-dependent math operations.
-    // Otherwise objects would move slower at 30 fps for example.
+    // NOTE:
+    // `delta` is the delta time as a scalar value.
+    // At 30 fps it will have a value of 2 if max frames per seconds is 60.
+    // Use this when doing frame-dependent operations such as movement.
+    //
+    // Use `time` instead to increase timers as this is the delta time in milliseconds.
     positionX[i] += velocityX[i] * delta;
     positionY[i] += velocityY[i] * delta;
-
-    // NOTE:
-    // `delta` is a scalar value, at 30 fps it will have a value of 2 if max fps is 60.
-    // Use `time` instead to increase timers as this is the time in milliseconds instead.
 
     // Transformation matrix operations:
     // 1. Put the drawing pencil back at 0,0 and reset scaling and reset rotation.
@@ -154,13 +161,22 @@ function update() {
         {
           // A sprite is a sub-region (frame) within a texture.
           drawSprite(
-            Texture.ATLAS, // textureId
-            0, // frameX
-            0, // frameY
-            16, // frameWidth
-            16, // frameHeight
-            8, // pivotX (point of rotation and scaling)
-            16, // pivotY (point of rotation and scaling)
+            // textureId
+            Texture.ATLAS,
+
+            // Pivot point: x, y
+            // The point of rotation and scaling.
+            // Before we can do this, we need to translate to the position of the
+            // entity (see `translateTransform` above).
+            // Otherwise it will simply be the x and y coordinates to draw at.
+            -8,
+            -16,
+
+            // Frame: x, y, width, height
+            0,
+            0,
+            16,
+            16,
           );
         }
         break;
@@ -174,6 +190,3 @@ run(
   update,
 );
 ```
-
-> [!TIP]
-> Use my other library [game-data-gen](https://github.com/patrickswijgman/game-data-gen) to create data structures (such as Structure of Arrays) for your game.
