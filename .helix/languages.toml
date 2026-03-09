@@ -11,16 +11,6 @@ language-servers = [{ name = "typescript-language-server", except-features = ["f
 auto-format = true
 
 [[language]]
-name = "html"
-language-servers = ["biome"]
-auto-format = true
-
-[[language]]
-name = "css"
-language-servers = ["biome"]
-auto-format = true
-
-[[language]]
 name = "json"
 language-servers = ["biome"]
 auto-format = true
