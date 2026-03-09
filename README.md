@@ -37,17 +37,18 @@ There is no extensive documentation, the example below should be enough to get y
 import { addCameraTransform, delta, drawSprite, isInputDown, loadFont, loadSound, loadTexture, resetTransform, run, scaleTransform, setCameraBoundary, setCameraSmoothing, setFont, translateTransform } from "snuggy";
 
 // const enums are compiled to inline values instead of objects, making it more speedy.
+// Use indexes for resources as they are stored in arrays. Make sure the numbers are contiguous.
 const enum Texture {
-  ATLAS = "atlas",
+  ATLAS = 0
 }
 
 const enum Font {
-  DEFAULT = "default",
+  DEFAULT = 0
 }
 
 const enum Sound {
-  MUSIC = "music",
-  OOF = "oof",
+  MUSIC = 0,
+  OOF = 1,
 }
 
 const enum Input {
@@ -138,7 +139,6 @@ function update() {
     // `delta` is the delta time as a scalar value.
     // At 30 fps it will have a value of 2 if max frames per seconds is 60.
     // Use this when doing frame-dependent operations such as movement.
-    //
     // Use `time` instead to increase timers as this is the delta time in milliseconds.
     positionX[i] += velocityX[i] * delta;
     positionY[i] += velocityY[i] * delta;
@@ -161,10 +161,10 @@ function update() {
         {
           // A sprite is a sub-region (frame) within a texture.
           drawSprite(
-            // textureId
+            // Texture ID
             Texture.ATLAS,
 
-            // Pivot point: x, y
+            // Pivot point of the frame (x, y)
             // The point of rotation and scaling.
             // Before we can do this, we need to translate to the position of the
             // entity (see `translateTransform` above).
@@ -172,7 +172,7 @@ function update() {
             -8,
             -16,
 
-            // Frame: x, y, width, height
+            // Frame position and size within the texture (x, y, width, height)
             0,
             0,
             16,

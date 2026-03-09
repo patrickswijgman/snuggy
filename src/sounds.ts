@@ -1,8 +1,8 @@
-const sounds: Record<string, HTMLAudioElement> = Object.create(null);
+const sounds: Array<HTMLAudioElement> = []
 
 export let volume = 1;
 
-export async function loadSound(id: string, url: string, stream = false) {
+export async function loadSound(id: number, url: string, stream = false) {
   await new Promise<void>((resolve, reject) => {
     const audio = new Audio(url);
     const event = stream ? "canplay" : "canplaythrough";
@@ -26,7 +26,7 @@ export async function loadSound(id: string, url: string, stream = false) {
   });
 }
 
-export function getSound(id: string) {
+export function getSound(id: number) {
   return sounds[id];
 }
 
@@ -39,13 +39,13 @@ export function playSound(id: number) {
 
 export function stopSound(id: number) {
   const sound = sounds[id];
-  sound.pause();
   sound.currentTime = 0;
+  sound.pause();
 }
 
 export function setVolume(value: number) {
   volume = value;
-  for (const id in sounds) {
-    sounds[id].volume = volume;
+  for (const sound of sounds) {
+    sound.volume = volume;
   }
 }

@@ -12,8 +12,7 @@ export const ctx = canvas.getContext("2d")!;
 export let width: number;
 export let height: number;
 export let scale: number;
-
-export let fontId: string;
+export let fontId: number;
 
 export function setupCanvas(size: number) {
   width = size;
@@ -45,11 +44,11 @@ export function clearBackground() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 }
 
-export function drawTexture(textureId: string, x: number, y: number) {
+export function drawTexture(textureId: number, x: number, y: number) {
   ctx.drawImage(getTexture(textureId), x, y);
 }
 
-export function drawSprite(textureId: string, x: number, y: number, frameX: number, frameY: number, frameW: number, frameH: number) {
+export function drawSprite(textureId: number, x: number, y: number, frameX: number, frameY: number, frameW: number, frameH: number) {
   ctx.drawImage(getTexture(textureId), frameX, frameY, frameW, frameH, x, y, frameW, frameH);
 }
 
@@ -71,11 +70,11 @@ export function drawRect(x: number, y: number, w: number, h: number, color: stri
   }
 }
 
-export function setAlpha(a: number) {
-  ctx.globalAlpha = a;
+export function setAlpha(value: number) {
+  ctx.globalAlpha = value;
 }
 
-export function setFont(id: string) {
+export function setFont(id: number) {
   fontId = id;
 }
 
