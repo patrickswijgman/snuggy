@@ -1,4 +1,4 @@
-const textures: Array<HTMLImageElement | HTMLCanvasElement> = []
+const textures: Array<HTMLImageElement | HTMLCanvasElement> = [];
 
 export async function loadTexture(id: number, url: string) {
   const img = new Image();

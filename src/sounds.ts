@@ -1,4 +1,4 @@
-const sounds: Array<HTMLAudioElement> = []
+const sounds: Array<HTMLAudioElement> = [];
 
 export let volume = 1;
 
