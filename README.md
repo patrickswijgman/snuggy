@@ -116,15 +116,11 @@ async function setup() {
   setFont(Font.DEFAULT);
 
   // Setup the player.
-  entities[PLAYER_IDX] = {
-    type: Type.PLAYER,
-    x: 50,
-    y: 50,
-    velocityX: 0,
-    velocityY: 0,
-    isActive: true,
-    isFlipped: false,
-  };
+  const player = entities[PLAYER_IDX];
+  player.type = Type.PLAYER;
+  player.x = 50;
+  player.y = 50;
+  player.isActive = true;
 }
 
 // Update and draw each frame.
@@ -149,12 +145,13 @@ function update() {
             entity.isFlipped = false;
           }
 
-         setCameraTarget(entity.x, entity.y);
+          setCameraTarget(entity.x, entity.y);
         }
         break;
     }
 
     // Update position with velocity.
+    // Important to use the delta here, otherwise the entity will move slower on lower FPS and faster on higher FPS.
     entity.x += entity.velocityX * delta;
     entity.y += entity.velocityY * delta;
 
