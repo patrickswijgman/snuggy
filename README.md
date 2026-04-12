@@ -1,6 +1,6 @@
 # Snuggy
 
-A snuggy simple game engine to make games with HTML canvas. Perfect for little data oriented games!
+A snuggy simple game engine to make games with HTML canvas. Perfect for small games!
 
 ## Features
 
@@ -34,7 +34,7 @@ npm i snuggy
 There is no extensive documentation, the example below should be enough to get you started! Also the source code of snuggy is not a lot :wink:
 
 ```typescript
-import { addCameraTransform, delta, drawSprite, isInputDown, loadFont, loadSound, loadTexture, resetTransform, run, scaleTransform, setCameraBoundary, setCameraSmoothing, setFont, translateTransform } from "snuggy";
+import { addCameraTransform, delta, drawSprite, isInputDown, loadFont, loadSound, loadTexture, resetTransform, run, scaleTransform, setCameraBoundary, setCameraSmoothing, setCameraTarget, setFont, translateTransform, updateCamera } from "snuggy";
 
 // const enums are compiled to inline values instead of objects, making it more speedy.
 // Use indexes for resources as they are stored in arrays. Make sure the numbers are contiguous.
@@ -52,7 +52,6 @@ const enum Sound {
 }
 
 const enum Input {
-  // See for example https://www.toptal.com/developers/keycode for key codes.
   LEFT = "ArrowLeft",
   RIGHT = "ArrowRight",
   // Use the button number as string for mouse buttons.
@@ -62,6 +61,7 @@ const enum Input {
 }
 
 const enum Type {
+  UNKNOWN = 0,
   PLAYER = 1,
   ENEMY = 2,
 }
@@ -69,26 +69,38 @@ const enum Type {
 // Arbitrary amount, can be less or more depending on your needs.
 const MAX_ENTITIES = 2048;
 
-// Entity data (Structure of Arrays)
-// See my other library https://github.com/patrickswijgman/game-data-gen to create these data structures easily.
-const type = new Uint8Array(MAX_ENTITIES);
-const positionX = new Float32Array(MAX_ENTITIES);
-const positionY = new Float32Array(MAX_ENTITIES);
-const velocityX = new Float32Array(MAX_ENTITIES);
-const velocityY = new Float32Array(MAX_ENTITIES);
-const isActive = new Uint8Array(MAX_ENTITIES);
-const isFlipped = new Uint8Array(MAX_ENTITIES);
+// Entity data structure.
+type Entity = {
+  type: Type;
+  positionX: number;
+  y: number;
+  velocityX: number;
+  velocityY: number;
+  isActive: boolean;
+  isFlipped: boolean;
+}
+
+// Fill the array of entities (Array of Structures).
+const entities = new Array<Entity>(MAX_ENTITIES);
+for (let i = 0; i < MAX_ENTITIES; i++) {
+  entities[i] = {
+    type: Type.UNKNOWN,
+    x: 0,
+    y: 0,
+    velocityX: 0,
+    velocityY: 0,
+    isActive: false,
+    isFlipped: false,
+  }
+}
 
 // Let's reserve the first index for the player.
-// In the real world you'd want to make a function to get the next free entity index.
-const playerIndex = 0;
+const PLAYER_IDX = 0;
 
 async function setup() {
   // Use Promise.all to load all resources in parallel, increasing page load speed!
   await Promise.all([
     // Textures.
-    // A texture would contain all the sprites you need for your game.
-    // Using a single texture for all sprites is more efficient for the GPU!
     loadTexture(Texture.ATLAS, "textures/atlas.png"),
 
     // Fonts.
@@ -104,89 +116,79 @@ async function setup() {
   setFont(Font.DEFAULT);
 
   // Setup the player.
-  type[playerIndex] = Type.PLAYER;
-  positionX[playerIndex] = 50;
-  positionY[playerIndex] = 50;
-  isActive[playerIndex] = 1; // A positive number equals true, zero equals false.
+  entities[PLAYER_IDX] = {
+    type: Type.PLAYER,
+    x: 50,
+    y: 50,
+    velocityX: 0,
+    velocityY: 0,
+    isActive: true,
+    isFlipped: false,
+  };
 }
 
 // Update and draw each frame.
 function update() {
-  for (let i = 0; i < MAX_ENTITIES; i++) {
-    if (!isActive[i]) {
+  for (const entity of entities) {
+    if (!entity.isActive) {
       continue;
     }
 
     // Update entity logic.
-    switch (type[i]) {
+    switch (entity.type) {
       case Type.PLAYER:
         {
-          velocityX[i] = 0;
+          entity.velocityX = 0;
 
           if (isInputDown(Input.LEFT)) {
-            velocityX[i] -= 1;
-            isFlipped[i] = 1;
+            entity.velocityX -= 1;
+            entity.isFlipped = true;
           }
           if (isInputDown(Input.RIGHT)) {
-            velocityX[i] += 1;
-            isFlipped[i] = 0;
+            entity.velocityX += 1;
+            entity.isFlipped = false;
           }
+
+         setCameraTarget(entity.x, entity.y);
         }
         break;
     }
 
-    // NOTE:
-    // `delta` is the delta time as a scalar value.
-    // At 30 fps it will have a value of 2 if max frames per seconds is 60.
-    // Use this when doing frame-dependent operations such as movement.
-    // Use `time` instead to increase timers as this is the delta time in milliseconds.
-    positionX[i] += velocityX[i] * delta;
-    positionY[i] += velocityY[i] * delta;
+    // Update position with velocity.
+    entity.x += entity.velocityX * delta;
+    entity.y += entity.velocityY * delta;
 
-    // Transformation matrix operations:
-    // 1. Put the drawing pencil back at 0,0 and reset scaling and reset rotation.
-    resetTransform();
-    // 2. Add camera translation (don't do this if you want to draw UI elements).
-    addCameraTransform();
-    // 3. Put the drawing pencil at the entity's position to draw the sprite at.
-    translateTransform(positionX[i], positionY[i]);
-    // 4. Scale by -1 on the x-axis to horizontally flip a sprite.
-    if (isFlipped[i]) {
-      scaleTransform(-1, 1);
+    // Transformation matrix operations (AKA the drawing pencil):
+    resetTransform();                       // 1. Reset transformations back to x=0, y=0
+    addCameraTransform();                   // 2. Add camera transform (not needed for e.g. UI elements)
+    translateTransform(entity.x, entity.y); // 3. Translate to entity's position
+    if (entity.isFlipped) {
+      scaleTransform(-1, 1);                // 4. Flip sprite horizontally if flipped
     }
 
     // Render entity.
-    switch (type[i]) {
+    switch (entity.type) {
       case Type.PLAYER:
-        {
-          // A sprite is a sub-region (frame) within a texture.
-          drawSprite(
-            // Texture ID
-            Texture.ATLAS,
-
-            // Pivot point of the frame (x, y)
-            // The point of rotation and scaling.
-            // Before we can do this, we need to translate to the position of the
-            // entity (see `translateTransform` above).
-            // Otherwise it will simply be the x and y coordinates to draw at.
-            -8,
-            -16,
-
-            // Frame position and size within the texture (x, y, width, height)
-            0,
-            0,
-            16,
-            16,
-          );
-        }
+        drawSprite(
+          Texture.ATLAS,  // Texture ID
+          -8,             // Pivot point (x)
+          -16,            // Pivot point (y)
+          0,              // Frame x
+          0,              // Frame y
+          16,             // Frame width
+          16              // Frame height
+        );
         break;
     }
   }
+
+  // Call this once every frame, the camera will then pan automatically to the camera's target.
+  updateCamera();
 }
 
 run(
   320, // Canvas size, will be auto sized and scaled based on screen and aspect ratio.
   setup,
-  update,
+  update
 );
 ```

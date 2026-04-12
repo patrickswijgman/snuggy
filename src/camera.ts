@@ -5,6 +5,9 @@ import { clamp, getDistance } from "./utils.js";
 export let cameraX = 0;
 export let cameraY = 0;
 
+export let cameraTargetX = 0;
+export let cameraTargetY = 0;
+
 export let cameraSmoothing = 1;
 
 export let cameraBoundaryX = 0;
@@ -12,9 +15,9 @@ export let cameraBoundaryY = 0;
 export let cameraBoundaryW = 0;
 export let cameraBoundaryH = 0;
 
-export function updateCamera(x: number, y: number) {
-  const targetX = x - getWidth() / 2;
-  const targetY = y - getHeight() / 2;
+export function updateCamera() {
+  const targetX = cameraTargetX - getWidth() / 2;
+  const targetY = cameraTargetY - getHeight() / 2;
 
   if (cameraSmoothing >= 1) {
     cameraX = targetX;
@@ -48,6 +51,11 @@ export function addCameraTransform() {
 export function setCameraPosition(x: number, y: number) {
   cameraX = x - getWidth() / 2;
   cameraY = y - getHeight() / 2;
+}
+
+export function setCameraTarget(x: number, y: number) {
+  cameraTargetX = x;
+  cameraTargetY = y;
 }
 
 export function setCameraSmoothing(value: number) {
