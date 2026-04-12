@@ -1,6 +1,6 @@
-import { getFont } from "./fonts.ts";
-import { getTexture } from "./textures.ts";
-import { toRadians } from "./utils.ts";
+import { getFont } from "./fonts.js";
+import { getTexture } from "./textures.js";
+import { toRadians } from "./utils.js";
 
 const WIDTH = window.screen.width;
 const HEIGHT = window.screen.height;

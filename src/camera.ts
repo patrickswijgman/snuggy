@@ -1,6 +1,6 @@
-import { getHeight, getWidth, translateTransform } from "./canvas.ts";
-import { delta } from "./loop.ts";
-import { clamp, getDistance } from "./utils.ts";
+import { getHeight, getWidth, translateTransform } from "./canvas.js";
+import { delta } from "./loop.js";
+import { clamp, getDistance } from "./utils.js";
 
 export let cameraX = 0;
 export let cameraY = 0;

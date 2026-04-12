@@ -1,5 +1,5 @@
-import { cameraX, cameraY } from "./camera.ts";
-import { canvas, scale } from "./canvas.ts";
+import { cameraX, cameraY } from "./camera.js";
+import { canvas, scale } from "./canvas.js";
 
 const inputsDown: Record<string, boolean> = Object.create(null);
 const inputsPressed: Record<string, boolean> = Object.create(null);
