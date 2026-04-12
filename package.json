@@ -10,11 +10,11 @@
   "exports": "./dist/index.js",
   "scripts": {
     "start": "tsc --watch",
-    "build": "tsc"
+    "build": "biome check && tsc"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/patrickswijgman/snuggy"
+    "url": "git+https://github.com/patrickswijgman/snuggy"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.4.11",
