@@ -72,7 +72,7 @@ const MAX_ENTITIES = 2048;
 // Entity data structure.
 type Entity = {
   type: Type;
-  positionX: number;
+  x: number;
   y: number;
   velocityX: number;
   velocityY: number;
