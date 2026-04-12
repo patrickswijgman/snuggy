@@ -1,3 +1,7 @@
+[language-server.typescript-language-server.config]
+preferences.importModuleSpecifierPreference = "non-relative"
+preferences.importModuleSpecifierEnding = "js"
+
 [language-server.biome]
 command = "npx"
 args = ["biome", "lsp-proxy"]
