@@ -82,14 +82,6 @@ export function setFontOffset(x: number, y: number) {
   fontOffsetY = y;
 }
 
-export function getWidth() {
-  return width;
-}
-
-export function getHeight() {
-  return height;
-}
-
 function resize() {
   const r = width / height;
 
