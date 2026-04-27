@@ -1,5 +1,6 @@
 export function ease(x: number) {
-  return -(Math.cos(Math.PI * x) - 1) / 2;
+  const t = x < 0.5 ? x * 2 : 2 - x * 2;
+  return -(Math.cos(Math.PI * t) - 1) / 2;
 }
 
 export function toRadians(degrees: number) {
