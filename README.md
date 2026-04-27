@@ -184,7 +184,10 @@ function update() {
 }
 
 run(
-  320, // Canvas size, will be auto sized and scaled based on screen and aspect ratio.
+  // Logical canvas size, will be auto sized and scaled based on screen and aspect ratio.
+  640, 
+  360,
+
   setup,
   update
 );

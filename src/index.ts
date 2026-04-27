@@ -1,5 +1,5 @@
 export { addCameraTransform, cameraX, cameraY, setCameraBoundary, setCameraPosition, setCameraSmoothing, setCameraTarget, updateCamera } from "./camera.js";
-export { drawRect, drawSprite, drawText, drawTexture, getHeight, getWidth, resetTransform, rotateTransform, scaleTransform, setAlpha, setFont, translateTransform } from "./canvas.js";
+export { drawRect, drawSprite, drawText, drawTexture, getHeight, getWidth, resetTransform, rotateTransform, scaleTransform, setAlpha, setFont, setFontOffset, translateTransform } from "./canvas.js";
 export { getFont, loadFont } from "./fonts.js";
 export { isInputDown, isInputPressed, isInputReleased, pointerWorldX, pointerWorldY, pointerX, pointerY } from "./input.js";
 export { delta, elapsed, fps, time } from "./loop.js";

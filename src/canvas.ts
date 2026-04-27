@@ -2,29 +2,28 @@ import { getFont } from "./fonts.js";
 import { getTexture } from "./textures.js";
 import { toRadians } from "./utils.js";
 
-const WIDTH = window.screen.width;
-const HEIGHT = window.screen.height;
-const ASPECT_RATIO = WIDTH / HEIGHT;
-
 export const canvas = document.createElement("canvas");
 export const ctx = canvas.getContext("2d")!;
 
 export let width: number;
 export let height: number;
-export let scale: number;
-export let fontId: number;
+export let scaleX = 1;
+export let scaleY = 1;
 
-export function setupCanvas(size: number) {
-  width = size;
-  height = size / ASPECT_RATIO;
-  scale = HEIGHT / height;
+export let fontId: number;
+export let fontOffsetX = 0;
+export let fontOffsetY = 0;
+
+export function setupCanvas(w: number, h: number) {
+  width = w;
+  height = h;
   resize();
   window.addEventListener("resize", resize);
   document.body.appendChild(canvas);
 }
 
 export function resetTransform() {
-  ctx.setTransform(scale, 0, 0, scale, 0, 0);
+  ctx.setTransform(scaleX, 0, 0, scaleY, 0, 0);
 }
 
 export function translateTransform(x: number, y: number) {
@@ -57,7 +56,7 @@ export function drawText(text: string, x: number, y: number, color: string, alig
   ctx.textAlign = align;
   ctx.textBaseline = baseline;
   ctx.fillStyle = color;
-  ctx.fillText(text, x, y);
+  ctx.fillText(text, x + fontOffsetX, y + fontOffsetY);
 }
 
 export function drawRect(x: number, y: number, w: number, h: number, color: string, filled: boolean) {
@@ -78,17 +77,33 @@ export function setFont(id: number) {
   fontId = id;
 }
 
+export function setFontOffset(x: number, y: number) {
+  fontOffsetX = x;
+  fontOffsetY = y;
+}
+
 export function getWidth() {
-  return canvas.width / scale;
+  return width;
 }
 
 export function getHeight() {
-  return canvas.height / scale;
+  return height;
 }
 
 function resize() {
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
+  const r = width / height;
+
+  let w = window.innerWidth;
+  let h = w / r;
+  if (h > window.innerHeight) {
+    h = window.innerHeight;
+    w = h * r;
+  }
+
+  scaleX = w / width;
+  scaleY = h / height;
+  canvas.width = w;
+  canvas.height = h;
   ctx.imageSmoothingEnabled = false;
   ctx.textRendering = "optimizeSpeed";
 }

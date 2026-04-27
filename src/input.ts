@@ -1,5 +1,5 @@
 import { cameraX, cameraY } from "./camera.js";
-import { canvas, scale } from "./canvas.js";
+import { canvas, scaleX, scaleY } from "./canvas.js";
 
 const inputsDown: Record<string, boolean> = Object.create(null);
 const inputsPressed: Record<string, boolean> = Object.create(null);
@@ -43,8 +43,8 @@ function setInput(id: string, isPressed: boolean) {
 }
 
 function updatePointerPosition(x: number, y: number) {
-  pointerX = x / scale;
-  pointerY = y / scale;
+  pointerX = x / scaleX;
+  pointerY = y / scaleY;
   updatePointerWorldPosition();
 }
 
