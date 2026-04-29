@@ -1,9 +1,7 @@
 import { cameraX, cameraY } from "./camera.js";
 import { canvas, offsetX, offsetY, scaleX, scaleY } from "./canvas.js";
 
-export type InputMap = Record<string, number>;
-
-let inputMap: InputMap = Object.create(null);
+let inputMap: Record<string, number> = Object.create(null);
 
 const down = new Uint8Array(256);
 const pressed = new Uint8Array(256);
@@ -14,7 +12,7 @@ export let pointerY = 0;
 export let pointerWorldX = 0;
 export let pointerWorldY = 0;
 
-export function setupInput(map: InputMap) {
+export function setInputMap(map: Record<string, number>) {
   inputMap = map;
 }
 
