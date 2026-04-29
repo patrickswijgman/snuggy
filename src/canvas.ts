@@ -9,6 +9,8 @@ export let width: number;
 export let height: number;
 export let scaleX = 1;
 export let scaleY = 1;
+export let offsetX = 0;
+export let offsetY = 0;
 
 export let fontId: number;
 export let fontOffsetX = 0;
@@ -94,8 +96,14 @@ function resize() {
 
   scaleX = w / width;
   scaleY = h / height;
+
   canvas.width = w;
   canvas.height = h;
+
+  const bounds = canvas.getBoundingClientRect();
+  offsetX = bounds.left;
+  offsetY = bounds.right;
+
   ctx.imageSmoothingEnabled = false;
   ctx.textRendering = "optimizeSpeed";
 }

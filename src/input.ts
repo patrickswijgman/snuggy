@@ -1,5 +1,5 @@
 import { cameraX, cameraY } from "./camera.js";
-import { canvas, scaleX, scaleY } from "./canvas.js";
+import { canvas, offsetX, offsetY, scaleX, scaleY } from "./canvas.js";
 
 export type InputMap = Record<string, number>;
 
@@ -71,25 +71,22 @@ window.addEventListener("keyup", ({ code }) => {
 });
 
 canvas.addEventListener("pointerdown", ({ clientX, clientY, button }) => {
-  const bounds = canvas.getBoundingClientRect();
-  const x = clientX - bounds.left;
-  const y = clientY - bounds.top;
+  const x = clientX - offsetX;
+  const y = clientY - offsetY;
   updatePointerPosition(x, y);
   setInput(button.toString(), true);
 });
 
 canvas.addEventListener("pointerup", ({ clientX, clientY, button }) => {
-  const bounds = canvas.getBoundingClientRect();
-  const x = clientX - bounds.left;
-  const y = clientY - bounds.top;
+  const x = clientX - offsetX;
+  const y = clientY - offsetY;
   updatePointerPosition(x, y);
   setInput(button.toString(), false);
 });
 
 canvas.addEventListener("pointermove", ({ clientX, clientY }) => {
-  const bounds = canvas.getBoundingClientRect();
-  const x = clientX - bounds.left;
-  const y = clientY - bounds.top;
+  const x = clientX - offsetX;
+  const y = clientY - offsetY;
   updatePointerPosition(x, y);
 });
 
