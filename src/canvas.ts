@@ -102,7 +102,7 @@ function resize() {
 
   const bounds = canvas.getBoundingClientRect();
   offsetX = bounds.left;
-  offsetY = bounds.right;
+  offsetY = bounds.top;
 
   ctx.imageSmoothingEnabled = false;
   ctx.textRendering = "optimizeSpeed";
