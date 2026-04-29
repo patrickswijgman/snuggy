@@ -63,17 +63,26 @@ window.addEventListener("keyup", ({ code }) => {
 });
 
 canvas.addEventListener("pointerdown", ({ clientX, clientY, button }) => {
-  updatePointerPosition(clientX, clientY);
+  const bounds = canvas.getBoundingClientRect();
+  const x = clientX - bounds.left;
+  const y = clientY - bounds.top;
+  updatePointerPosition(x, y);
   setInput(button.toString(), true);
 });
 
 canvas.addEventListener("pointerup", ({ clientX, clientY, button }) => {
-  updatePointerPosition(clientX, clientY);
+  const bounds = canvas.getBoundingClientRect();
+  const x = clientX - bounds.left;
+  const y = clientY - bounds.top;
+  updatePointerPosition(x, y);
   setInput(button.toString(), false);
 });
 
 canvas.addEventListener("pointermove", ({ clientX, clientY }) => {
-  updatePointerPosition(clientX, clientY);
+  const bounds = canvas.getBoundingClientRect();
+  const x = clientX - bounds.left;
+  const y = clientY - bounds.top;
+  updatePointerPosition(x, y);
 });
 
 canvas.addEventListener("contextmenu", (e) => {
