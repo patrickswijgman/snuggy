@@ -34,7 +34,7 @@ npm i snuggy
 There is no extensive documentation, the example below should be enough to get you started! Also the source code of snuggy is not a lot :wink:
 
 ```typescript
-import { type InputMap, addCameraTransform, delta, drawSprite, isInputDown, loadFont, loadSound, loadTexture, resetTransform, run, scaleTransform, setCameraBoundary, setCameraSmoothing, setCameraTarget, setFont, translateTransform, updateCamera } from "snuggy";
+import { addCameraTransform, delta, drawSprite, isInputDown, loadFont, loadSound, loadTexture, resetTransform, run, scaleTransform, setCameraBoundary, setCameraSmoothing, setCameraTarget, setFont, setFontOffset, setInputMap, translateTransform, updateCamera } from "snuggy";
 
 // const enums are compiled to inline values instead of objects, making it more speedy.
 // Use indexes for resources as they are stored in arrays. Make sure the numbers are contiguous.
@@ -79,10 +79,9 @@ type Entity = {
   isFlipped: boolean;
 }
 
-// Fill the array of entities (Array of Structures).
-const entities = new Array<Entity>(MAX_ENTITIES);
-for (let i = 0; i < MAX_ENTITIES; i++) {
-  entities[i] = {
+// Factory function.
+function createEntity(): Entity {
+  return {
     type: Type.UNKNOWN,
     x: 0,
     y: 0,
@@ -90,8 +89,11 @@ for (let i = 0; i < MAX_ENTITIES; i++) {
     velocityY: 0,
     isActive: false,
     isFlipped: false,
-  }
+  };
 }
+
+// Fill the array of entities (Array of Structures).
+const entities = Array.from({ length: MAX_ENTITIES }, createEntity);
 
 // Let's reserve the first index for the player.
 const PLAYER_IDX = 0;
@@ -112,7 +114,18 @@ async function setup() {
 
   setCameraSmoothing(0.1);
   setCameraBoundary(0, 0, 1000, 1000); // Restrict camera to the level size.
+
   setFont(Font.DEFAULT);
+  setFontOffset(0, 0);
+
+  // Map key codes and mouse button numbers to Input enum values.
+  setInputMap({
+    "ArrowLeft": Input.LEFT,
+    "ArrowRight": Input.RIGHT,
+    "0": Input.LMB,
+    "1": Input.MMB,
+    "2": Input.RMB,
+  });
 
   // Setup the player.
   const player = entities[PLAYER_IDX];
@@ -167,8 +180,8 @@ function update() {
       case Type.PLAYER:
         drawSprite(
           Texture.ATLAS,  // Texture ID
-          -8,             // Pivot point (x)
-          -16,            // Pivot point (y)
+          -8,             // Pivot point x
+          -16,            // Pivot point y
           0,              // Frame x
           0,              // Frame y
           16,             // Frame width
@@ -182,24 +195,12 @@ function update() {
   updateCamera();
 }
 
-// Map key codes and mouse button numbers to Input enum values.
-const inputMap: InputMap = {
-  "ArrowLeft": Input.LEFT,
-  "ArrowRight": Input.RIGHT,
-  "0": Input.LMB,
-  "1": Input.MMB,
-  "2": Input.RMB,
-};
-
 run(
   // Logical canvas size, will be auto sized and scaled based on screen and aspect ratio.
   640,
   360,
 
   setup,
-
-  update,
-
-  inputMap
+  update
 );
 ```
