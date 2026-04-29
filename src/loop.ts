@@ -30,7 +30,7 @@ export function startLoop(update: () => void) {
       if (framesTime >= 1000) {
         fps = frames;
         frames = 0;
-        framesTime = 0;
+        framesTime -= 1000;
       }
 
       update();
