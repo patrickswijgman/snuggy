@@ -34,7 +34,7 @@ npm i snuggy
 There is no extensive documentation, the example below should be enough to get you started! Also the source code of snuggy is not a lot :wink:
 
 ```typescript
-import { addCameraTransform, delta, drawSprite, isInputDown, loadFont, loadSound, loadTexture, resetTransform, run, scaleTransform, setCameraBoundary, setCameraSmoothing, setCameraTarget, setFont, translateTransform, updateCamera } from "snuggy";
+import { type InputMap, addCameraTransform, delta, drawSprite, isInputDown, loadFont, loadSound, loadTexture, resetTransform, run, scaleTransform, setCameraBoundary, setCameraSmoothing, setCameraTarget, setFont, translateTransform, updateCamera } from "snuggy";
 
 // const enums are compiled to inline values instead of objects, making it more speedy.
 // Use indexes for resources as they are stored in arrays. Make sure the numbers are contiguous.
@@ -52,12 +52,11 @@ const enum Sound {
 }
 
 const enum Input {
-  LEFT = "ArrowLeft",
-  RIGHT = "ArrowRight",
-  // Use the button number as string for mouse buttons.
-  LMB = "0",
-  MMB = "1",
-  RMB = "2",
+  LEFT = 0,
+  RIGHT = 1,
+  LMB = 2,
+  MMB = 3,
+  RMB = 4,
 }
 
 const enum Type {
@@ -183,13 +182,24 @@ function update() {
   updateCamera();
 }
 
+// Map key codes and mouse button numbers to Input enum values.
+const inputMap: InputMap = {
+  "ArrowLeft": Input.LEFT,
+  "ArrowRight": Input.RIGHT,
+  "0": Input.LMB,
+  "1": Input.MMB,
+  "2": Input.RMB,
+};
+
 run(
   // Logical canvas size, will be auto sized and scaled based on screen and aspect ratio.
-  640, 
+  640,
   360,
 
   setup,
 
-  update
+  update,
+
+  inputMap
 );
 ```
