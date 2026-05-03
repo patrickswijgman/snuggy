@@ -34,16 +34,35 @@ npm i snuggy
 There is no extensive documentation, the example below should be enough to get you started! Also the source code of snuggy is not a lot :wink:
 
 ```typescript
-import { addCameraTransform, delta, drawSprite, isInputDown, loadFont, loadSound, loadTexture, resetTransform, run, scaleTransform, setCameraBoundary, setCameraSmoothing, setCameraTarget, setFont, setFontOffset, setInputMap, translateTransform, updateCamera } from "snuggy";
+import {
+  addCameraTransform,
+  delta,
+  drawSprite,
+  isInputDown,
+  loadFont,
+  loadSound,
+  loadTexture,
+  resetTransform,
+  run,
+  scaleTransform,
+  setCameraBoundary,
+  setCameraSmoothing,
+  setCameraTarget,
+  setFont,
+  setFontOffset,
+  setInput,
+  translateTransform,
+  updateCamera,
+} from "snuggy";
 
 // const enums are compiled to inline values instead of objects, making it more speedy.
 // Use indexes for resources as they are stored in arrays. Make sure the numbers are contiguous.
 const enum Texture {
-  ATLAS = 0
+  ATLAS = 0,
 }
 
 const enum Font {
-  DEFAULT = 0
+  DEFAULT = 0,
 }
 
 const enum Sound {
@@ -68,32 +87,14 @@ const enum Type {
 // Arbitrary amount, can be less or more depending on your needs.
 const MAX_ENTITIES = 2048;
 
-// Entity data structure.
-type Entity = {
-  type: Type;
-  x: number;
-  y: number;
-  velocityX: number;
-  velocityY: number;
-  isActive: boolean;
-  isFlipped: boolean;
-}
-
-// Factory function.
-function createEntity(): Entity {
-  return {
-    type: Type.UNKNOWN,
-    x: 0,
-    y: 0,
-    velocityX: 0,
-    velocityY: 0,
-    isActive: false,
-    isFlipped: false,
-  };
-}
-
-// Fill the array of entities (Array of Structures).
-const entities = Array.from({ length: MAX_ENTITIES }, createEntity);
+// Entity data (Structure of Arrays).
+const type = new Uint8Array(MAX_ENTITIES);
+const positionX = new Float32Array(MAX_ENTITIES);
+const positionY = new Float32Array(MAX_ENTITIES);
+const velocityX = new Float32Array(MAX_ENTITIES);
+const velocityY = new Float32Array(MAX_ENTITIES);
+const isActive = new Uint8Array(MAX_ENTITIES);
+const isFlipped = new Uint8Array(MAX_ENTITIES);
 
 // Let's reserve the first index for the player.
 const PLAYER_IDX = 0;
@@ -119,73 +120,70 @@ async function setup() {
   setFontOffset(0, 0);
 
   // Map key codes and mouse button numbers to Input enum values.
-  setInputMap({
-    "ArrowLeft": Input.LEFT,
-    "ArrowRight": Input.RIGHT,
-    "0": Input.LMB,
-    "1": Input.MMB,
-    "2": Input.RMB,
-  });
+  setInput("ArrowLeft", Input.LEFT);
+  setInput("ArrowRight", Input.RIGHT);
+  setInput("0", Input.LMB);
+  setInput("1", Input.MMB);
+  setInput("2", Input.RMB);
 
   // Setup the player.
-  const player = entities[PLAYER_IDX];
-  player.type = Type.PLAYER;
-  player.x = 50;
-  player.y = 50;
-  player.isActive = true;
+  type[PLAYER_IDX] = Type.PLAYER;
+  positionX[PLAYER_IDX] = 50;
+  positionY[PLAYER_IDX] = 50;
+  isActive[PLAYER_IDX] = 1;
 }
 
 // Update and draw each frame.
 function update() {
-  for (const entity of entities) {
-    if (!entity.isActive) {
+  for (let i = 0; i < MAX_ENTITIES; i++) {
+    if (!isActive[i]) {
       continue;
     }
 
     // Update entity logic.
-    switch (entity.type) {
+    switch (type[i]) {
       case Type.PLAYER:
         {
-          entity.velocityX = 0;
+          velocityX[i] = 0;
 
           if (isInputDown(Input.LEFT)) {
-            entity.velocityX -= 1;
-            entity.isFlipped = true;
+            velocityX[i] -= 1;
+            isFlipped[i] = 1;
           }
           if (isInputDown(Input.RIGHT)) {
-            entity.velocityX += 1;
-            entity.isFlipped = false;
+            velocityX[i] += 1;
+            isFlipped[i] = 0;
           }
 
-          setCameraTarget(entity.x, entity.y);
+          setCameraTarget(positionX[i], positionY[i]);
         }
         break;
     }
 
     // Update position with velocity.
     // Important to use the delta here, otherwise the entity will move slower on lower FPS and faster on higher FPS.
-    entity.x += entity.velocityX * delta;
-    entity.y += entity.velocityY * delta;
+    positionX[i] += velocityX[i] * delta;
+    positionY[i] += velocityY[i] * delta;
 
     // Transformation matrix operations (AKA the drawing pencil):
-    resetTransform();                       // 1. Reset transformations back to x=0, y=0
-    addCameraTransform();                   // 2. Add camera transform (not needed for e.g. UI elements)
-    translateTransform(entity.x, entity.y); // 3. Translate to entity's position
-    if (entity.isFlipped) {
-      scaleTransform(-1, 1);                // 4. Flip sprite horizontally if flipped
+    resetTransform(); // 1. Reset transformations back to x=0, y=0
+    addCameraTransform(); // 2. Add camera transform (not needed for e.g. UI elements)
+    translateTransform(positionX[i], positionY[i]); // 3. Translate to entity's position
+    if (isFlipped[i]) {
+      scaleTransform(-1, 1); // 4. Flip sprite horizontally if flipped
     }
 
     // Render entity.
-    switch (entity.type) {
+    switch (type[i]) {
       case Type.PLAYER:
         drawSprite(
-          Texture.ATLAS,  // Texture ID
-          -8,             // Pivot point x
-          -16,            // Pivot point y
-          0,              // Frame x
-          0,              // Frame y
-          16,             // Frame width
-          16              // Frame height
+          Texture.ATLAS, // Texture ID
+          -8, // Pivot point x
+          -16, // Pivot point y
+          0, // Frame x
+          0, // Frame y
+          16, // Frame width
+          16, // Frame height
         );
         break;
     }
@@ -201,6 +199,6 @@ run(
   360,
 
   setup,
-  update
+  update,
 );
 ```

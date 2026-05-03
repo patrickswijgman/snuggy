@@ -41,8 +41,8 @@ export function rotateTransform(degrees: number) {
 }
 
 export function clearBackground() {
-  ctx.resetTransform();
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.setTransform(scaleX, 0, 0, scaleY, 0, 0);
+  ctx.clearRect(0, 0, width, height);
 }
 
 export function drawTexture(textureId: number, x: number, y: number) {

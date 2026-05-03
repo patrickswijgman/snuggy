@@ -1,6 +1,6 @@
 import { height, translateTransform, width } from "./canvas.js";
 import { delta } from "./loop.js";
-import { clamp, getDistance } from "./utils.js";
+import { clamp } from "./utils.js";
 
 export let cameraX = 0;
 export let cameraY = 0;
@@ -25,17 +25,8 @@ export function updateCamera() {
   } else {
     const dx = targetX - cameraX;
     const dy = targetY - cameraY;
-    const d = getDistance(0, 0, dx, dy);
-    const vx = dx * cameraSmoothing * delta;
-    const vy = dy * cameraSmoothing * delta;
-    const v = getDistance(0, 0, vx, vy);
-    if (v > d) {
-      cameraX += (vx / v) * d;
-      cameraY += (vy / v) * d;
-    } else {
-      cameraX += vx;
-      cameraY += vy;
-    }
+    cameraX += dx * cameraSmoothing * delta;
+    cameraY += dy * cameraSmoothing * delta;
   }
 
   if (cameraBoundaryW && cameraBoundaryH) {

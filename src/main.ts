@@ -1,4 +1,4 @@
-import { clearBackground, resetTransform, setupCanvas } from "./canvas.js";
+import { clearBackground, setupCanvas } from "./canvas.js";
 import { resetInputs, updateInputs } from "./input.js";
 import { startLoop } from "./loop.js";
 
@@ -7,7 +7,6 @@ export async function run(width: number, height: number, setup: () => Promise<vo
   await setup();
   startLoop(() => {
     clearBackground();
-    resetTransform();
     updateInputs();
     update();
     resetInputs();
