@@ -2,6 +2,8 @@ import { getFont } from "./fonts.js";
 import { getTexture } from "./textures.js";
 import { toRadians } from "./utils.js";
 
+const CIRCLE_ANGLE = 2 * Math.PI;
+
 export const canvas = document.createElement("canvas");
 export const ctx = canvas.getContext("2d")!;
 
@@ -68,6 +70,20 @@ export function drawRect(x: number, y: number, w: number, h: number, color: stri
   } else {
     ctx.strokeStyle = color;
     ctx.strokeRect(x, y, w, h);
+  }
+}
+
+export function drawCircle(x: number, y: number, r: number, color: string, filled: boolean) {
+  ctx.beginPath();
+  ctx.arc(x, y, r, 0, CIRCLE_ANGLE);
+  ctx.closePath();
+
+  if (filled) {
+    ctx.fillStyle = color;
+    ctx.fill();
+  } else {
+    ctx.strokeStyle = color;
+    ctx.stroke();
   }
 }
 
